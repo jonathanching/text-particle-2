@@ -1,0 +1,54 @@
+/**
+ * ==================================================================================
+ * Main stylesheet
+ * ==================================================================================
+ */
+
+/**
+ * @Extend
+ * ============================================================
+ */
+
+%control-border {
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+}
+
+
+/**
+ * @Styles
+ * ============================================================
+ */
+
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background: white;
+}
+
+#main {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    #textCanvas {
+        z-index: 10;
+    }
+
+    #canvas {
+        background: white;
+        z-index: 100;
+    }
+}
