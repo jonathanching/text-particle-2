@@ -10,7 +10,7 @@ import Math2 from '../libs/Math2.js';
 class MouseAttr {
 
     constructor() {
-        this.radius = 50;
+        this.radius = 75;
         this.color = 'black';
     }
 

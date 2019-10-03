@@ -25,6 +25,7 @@ export default class Sentence {
         this.textContext = textContext;
 
         this.particles = [];
+        this.particleCount = 0;
 
     	this.init();
     }
@@ -106,6 +107,9 @@ export default class Sentence {
      * Handle `particle` events
      */
     handleParticle() {
+        if(!STAGESTATE.isPopulated) return;
+
+
         /* Disregard particle if already dead */
         for(var i = 0; i < this.particles.length; i++) {
             let p = this.particles[i];
@@ -115,9 +119,22 @@ export default class Sentence {
         }
 
 
-        /* Re-draw word if no particles exist anymore */
-        if(this.particles.length == 0)
-            STAGESTATE.populated(false);
+        /* Re-draw word if the particles remaining is less than 1% */
+        if(this.particles.length <= (this.particleCount * .05)) {
+            /* Fade-out the remaining ones */
+            if(this.particles.length > 0) {
+                for(var i = 0; i < this.particles.length; i++) {
+                    this.particles[i].fadeOut();
+                }
+
+                setTimeout(() => {
+                    STAGESTATE.populated(false);
+                }, PARTICLEATTR.fadeOutDuration);
+
+            } else {
+                STAGESTATE.populated(false);
+            }
+        }
     }
 
     /**
@@ -128,13 +145,7 @@ export default class Sentence {
             let p = this.particles[i];
 
             if(p.canCollide() && this.checkParticleCollision(p))
-                p.fadeOut(
-                        this.getMouseCoords(),
-                        /* Randomize angle */
-                        MOUSEATTR.getCollisionAngle(),
-                        /* Randomize speed */
-                        MOUSEATTR.getCollisionForce()
-                    );
+                p.fadeOut();
         }
     }
 
@@ -146,6 +157,7 @@ export default class Sentence {
     updateCoordinates(image) {
         /* Clear all particles */
         this.particles = [];
+        this.particleCount = 0;
 
         /* Loop through the image data */
         for(var y = 0; y < this.canvas.height; y += PARTICLEATTR.density) {
@@ -158,6 +170,9 @@ export default class Sentence {
                 }
             }
         }
+
+        /* Save initial count */
+        this.particleCount = this.particles.length;
     }
 
 

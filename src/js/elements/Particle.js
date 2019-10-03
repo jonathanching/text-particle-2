@@ -6,6 +6,7 @@
  **/
 
 import { PARTICLEATTR } from '../attributes/ParticleAttr.js';
+import { MOUSEATTR } from '../attributes/MouseAttr.js';
 
 import { TWEEN } from '../libs/Tween.js';
 import Math2 from '../libs/Math2.js';
@@ -89,15 +90,14 @@ export default class Particle {
 
     /**
      * Start fade-out animation
-     * @param {Vector2} point
-     * @param {int}     angle
-     * @param {int}     force
      */
-    fadeOut(point, angle, force) {
-        /* Get the vector and distance from the point */
+    fadeOut() {
+        /* Get random vector */
         let repulseVec = new Vector2(0, 0),
-            repulseForce = repulseVec.setLength(force),
-            repulseAngle = repulseVec.setAngle(angle);
+            /* Randomize angle */
+            repulseForce = repulseVec.setLength(MOUSEATTR.getCollisionForce()),
+            /* Randomize speed */
+            repulseAngle = repulseVec.setAngle(MOUSEATTR.getCollisionAngle());
 
 
         /* Reset radius & opacity */
@@ -255,8 +255,7 @@ export default class Particle {
      * @return {Boolean}
      */
     isDead() {
-        return this.hasFadeIn &&
-                this.currAlpha <= 0.01 &&
-                this.currRadius <= 0.01;
+        return this.hasFadeIn && this.isFadingOut &&
+                (this.currAlpha <= 0 || this.currRadius <= PARTICLEATTR.minRadius);
     }
 }
