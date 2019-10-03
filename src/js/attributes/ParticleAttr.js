@@ -20,7 +20,7 @@ class ParticleAttr {
 
         this.fadeInDuration = 3000;
         this.fadeInDelay = 500;
-        this.fadeOutDuration = 2500;
+        this.fadeOutDuration = 1500;
     }
 
 

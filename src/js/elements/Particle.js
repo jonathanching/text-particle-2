@@ -16,6 +16,8 @@ export default class Particle {
 
     constructor(context, x, y) {
         this.context = context;
+
+        this.velocity = new Vector2(0, 0);
         this.initPos = new Vector2(x, y);
 
         this.init();
@@ -49,6 +51,7 @@ export default class Particle {
         this.animRemainingTime = null;
         this.isAnimating = false;
 
+        this.isFadingOut = false;
         this.hasFadeIn = false;
 
 
@@ -97,14 +100,14 @@ export default class Particle {
             repulseAngle = repulseVec.setAngle(angle);
 
 
+        /* Reset radius & opacity */
         this.initRadius = this.currRadius;
         this.goalRadius = 0;
-
         this.initAlpha = this.currAlpha;
         this.goalAlpha = 0;
-
-        this.goalPos = this.currPos.add(repulseVec);
-
+        /* Move the `particle` by velocity */
+        this.velocity = this.velocity.add(repulseVec);
+        this.isFadingOut = true;
 
         this.restartAnimation(PARTICLEATTR.fadeOutDuration);
     }
@@ -169,7 +172,7 @@ export default class Particle {
      * Update opacity value
      */
     updateAlpha() {
-        this.currAlpha = TWEEN.easeOutQuad(this.animRemainingTime, this.initAlpha, this.goalAlpha - this.initAlpha, this.animDuration);
+        this.currAlpha = TWEEN.easeInExpo(this.animRemainingTime, this.initAlpha, this.goalAlpha - this.initAlpha, this.animDuration);
     }
 
 
@@ -180,9 +183,15 @@ export default class Particle {
 
 
             /* Update needed values */
-            if(this.currPos != this.goalPos) this.updatePosition();
             if(this.currRadius != this.goalRadius) this.updateRadius();
             if(this.currAlpha != this.goalAlpha) this.updateAlpha();
+
+            /* Update the position by tween or velocity */
+            if(this.isFadingOut) {
+                this.currPos.addTo(this.velocity);
+            } else {
+                if(this.currPos != this.goalPos) this.updatePosition();
+            }
 
 
             /* Stop animation on duration end */

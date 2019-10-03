@@ -34,7 +34,7 @@ class MouseAttr {
      * @return {Integer}
      */
     getCollisionForce() {
-        return Math2.randomInt(100, 250);
+        return Math2.randomInt(2, 5);
     }
 }
 
